@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\StartGameFsm.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />
+    <Compile Include="Assets\Scripts\Form\LoadGameForm.cs" />
     <Compile Include="Assets\Scripts\StateRule.cs" />
     <Compile Include="Assets\Scripts\Utils\MonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Form\StartGameForm.cs" />

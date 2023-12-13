@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class StartGameForm : MonoBehaviour
 {
     public Button startGameButton;
-    // Start is called before the first frame update
+
     private void Awake()
     {
-        GameObject obj = GameObject.Find("StartGameForm");
-        startGameButton = obj.transform.Find("StartButton").gameObject.GetComponent<Button>();
+        startGameButton = GameObject.Find("StartButton").gameObject.GetComponent<Button>();
+        startGameButton.GetComponent<UIEventScript>().onClickEventId = EventId.OnClickStartGameButton;
         EventManager.Instance.AddEventListener(EventId.OnClickStartGameButton, OnClickStartGameButton);
     }
     private void OnDestroy()
@@ -21,12 +21,6 @@ public class StartGameForm : MonoBehaviour
 
     public void OnClickStartGameButton()
     {
-        EventManager.Instance.DispatchEvent(EventId.StartGame);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Debug.Log("OnClickStartGameButton");
     }
 }

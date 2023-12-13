@@ -12,6 +12,8 @@ public enum EventId
 
     // UI event callback
     OnClickStartGameButton,
+    OnClickButton1,
+    OnClickButton2,
 }
 
 public class EventManager : Singleton<EventManager>
@@ -48,6 +50,7 @@ public class EventManager : Singleton<EventManager>
             list.Add(onEventHandler);
             eventHandlerDict[eventID] = list;
         }
+        //Debug.Log("Add event listener:" + eventID.ToString());
     }
 
     public void RemoveEventListener(EventId eventID, OnEventHandler onEventHandler)
@@ -62,6 +65,7 @@ public class EventManager : Singleton<EventManager>
             List<OnEventHandler> list = eventHandlerDict[eventID];
             list.Remove(onEventHandler);
         }
+        //Debug.Log("Remove event listener:" + eventID.ToString());
     }
 
     public void DispatchEvent(EventId eventID)
@@ -72,7 +76,7 @@ public class EventManager : Singleton<EventManager>
             return;
         }
 
-        Debug.Log("eventID:" + eventID);
+        //Debug.Log("eventID:" + eventID);
 
         if (eventHandlerDict.ContainsKey(eventID))
         {
