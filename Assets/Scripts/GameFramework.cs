@@ -16,7 +16,8 @@ public class GameFramework : MonoSingleton<GameFramework>
         EventManager.CreateInstance();
         FormManager.GetInstance();
 
-        gameCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+        GameObject obj = GameObject.Find("MainCamera");
+        gameCamera = obj.GetComponent<Camera>();
     }
 
     private void Start()

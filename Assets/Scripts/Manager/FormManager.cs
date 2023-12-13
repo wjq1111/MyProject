@@ -8,6 +8,7 @@ public enum FormLayer
 {
     InvalidForm = -1,
     StartGameForm,
+    LoadGameForm,
 }
 
 public class FormManager : MonoSingleton<FormManager>
@@ -18,18 +19,19 @@ public class FormManager : MonoSingleton<FormManager>
 
     protected override void Init()
     {
-        EventManager.Instance.AddEventListener(EventId.OnClickStartGameButton, DestroyStartGameForm);
+        EventManager.Instance.AddEventListener(EventId.OnClickStartGameButton, PrepareLoadGameForm);
     }
 
     protected override void Uninit()
     {
         base.Uninit();
-        EventManager.Instance.RemoveEventListener(EventId.OnClickStartGameButton, DestroyStartGameForm);
+        EventManager.Instance.RemoveEventListener(EventId.OnClickStartGameButton, PrepareLoadGameForm);
     }
 
-    protected override void Awake()
+    private void PrepareLoadGameForm()
     {
-        base.Awake();
+        DestroyPrefab("StartGameForm");
+        LoadPrefab("LoadGameForm");
     }
 
     private void Start()
@@ -77,6 +79,7 @@ public class FormManager : MonoSingleton<FormManager>
             canvas.sortingLayerID = formUILayerID;
 
             openingForms.Add(layer, openingForms.Count);
+            Debug.Log("Load Prefab" + formName);
         }
         else
         {
@@ -96,10 +99,4 @@ public class FormManager : MonoSingleton<FormManager>
         Destroy(form);
         openingForms.Remove(layer);
     }
-
-    private void DestroyStartGameForm()
-    {
-        DestroyPrefab("StartGameForm");
-    }
-
 }
