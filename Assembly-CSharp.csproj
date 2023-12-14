@@ -65,10 +65,12 @@
     <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
     <Compile Include="Assets\Scripts\Manager\EventManager.cs" />
     <Compile Include="Assets\Scripts\StartGameFsm.cs" />
+    <Compile Include="Assets\Scripts\Config\StartGameFormConfig.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />
-    <Compile Include="Assets\Scripts\Form\LoadGameForm.cs" />
+    <Compile Include="Assets\Scripts\Form\LobbyForm.cs" />
     <Compile Include="Assets\Scripts\StateRule.cs" />
+    <Compile Include="Assets\Scripts\Manager\ConfigManager.cs" />
     <Compile Include="Assets\Scripts\Utils\MonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Form\StartGameForm.cs" />
   </ItemGroup>

@@ -13,6 +13,7 @@ public class GameFramework : MonoSingleton<GameFramework>
     protected override void Awake()
     {
         base.Awake();
+        ConfigManager.CreateInstance();
         EventManager.CreateInstance();
         FormManager.GetInstance();
 
@@ -31,5 +32,6 @@ public class GameFramework : MonoSingleton<GameFramework>
         base.OnDestroy();
         FormManager.DestroyInstance();
         EventManager.DestroyInstance();
+        ConfigManager.DestroyInstance();
     }
 }

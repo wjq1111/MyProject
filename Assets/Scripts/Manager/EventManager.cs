@@ -12,8 +12,8 @@ public enum EventId
 
     // UI event callback
     OnClickStartGameButton,
-    OnClickButton1,
-    OnClickButton2,
+    OnClickEndRoundButton,
+    OnClickExitGameButton,
 }
 
 public class EventManager : Singleton<EventManager>
