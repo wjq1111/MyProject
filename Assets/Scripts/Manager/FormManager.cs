@@ -7,8 +7,8 @@ using UnityEngine;
 public enum FormLayer
 {
     InvalidForm = -1,
+    LobbyForm,
     StartGameForm,
-    LoadGameForm,
 }
 
 public class FormManager : MonoSingleton<FormManager>
@@ -30,13 +30,13 @@ public class FormManager : MonoSingleton<FormManager>
 
     private void PrepareLoadGameForm()
     {
-        DestroyPrefab("StartGameForm");
-        LoadPrefab("LoadGameForm");
+        DestroyPrefab("LobbyForm");
+        LoadPrefab("StartGameForm");
     }
 
     private void Start()
     {
-        LoadPrefab("StartGameForm");
+        LoadPrefab("LobbyForm");
     }
 
     private FormLayer StringToFormLayer(string formName)
