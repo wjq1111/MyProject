@@ -13,6 +13,8 @@ public class GameFramework : MonoSingleton<GameFramework>
     protected override void Awake()
     {
         base.Awake();
+
+        AllocGid.CreateInstance();
         ConfigManager.CreateInstance();
         EventManager.CreateInstance();
         FormManager.GetInstance();
@@ -23,15 +25,15 @@ public class GameFramework : MonoSingleton<GameFramework>
 
     private void Start()
     {
-        Debug.Log("GameFrameWork start");
+
     }
 
     protected override void OnDestroy()
     {
-        Debug.Log("GameFrameWork destroy");
         base.OnDestroy();
         FormManager.DestroyInstance();
         EventManager.DestroyInstance();
         ConfigManager.DestroyInstance();
+        AllocGid.DestroyInstance();
     }
 }

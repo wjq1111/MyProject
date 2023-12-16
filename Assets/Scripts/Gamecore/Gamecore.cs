@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Collections;
 using UnityEngine;
 
 public class Gamecore : Singleton<Gamecore>
@@ -11,62 +12,53 @@ public class Gamecore : Singleton<Gamecore>
     private int eachRoundTime;
     private long nextRoundTime;
 
-    // max num of monsters
-    private int maxNum;
+    public Player player;
+    public Player aiPlayer;
 
-    // all monsters, 0-maxNum = AI, maxNum-2maxNum = Mine
-    private List<MonsterBase> monsterList;
+    public CampId gameRoundState;
 
     public override void Init()
     {
         // init values
         currentRound = 0;
-        monsterList = new List<MonsterBase>(2 * maxNum);
 
         // TODO config
         maxRound = 20;
-        eachRoundTime = 60;
-        maxNum = 4;
-        SetNextRoundTime();
+        eachRoundTime = 6000;
         InitAll();
     }
 
     private void InitAll()
     {
-        InitAllMonsters(MonsterCampId.AI);
-        InitAllMonsters(MonsterCampId.Mine);
+        InitAllPlayers();
+        InitAllMonsters();
+        InitGameStartCard();
+
+        SetNextRoundTime();
     }
 
-    private void InitAllMonsters(MonsterCampId id)
+    private void InitAllPlayers()
     {
-        // TODO use config to init monsters, now directly write them
-        for (int i = 0; i < maxNum; i++)
-        {
-            MonsterBase monster = new MonsterBase();
-            monster.NewMonsterBase("lgsb" + i.ToString(), id, 100 * (i + 1), 100 * (i + 1), 100 * (i + 1));
-            monsterList.Add(monster);
-        }
+        player = new Player();
+        player.campId = CampId.Mine;
+        player.Init();
+        aiPlayer = new Player();
+        aiPlayer.campId = CampId.AI;
+        aiPlayer.Init();
     }
 
-    public void TestAttack()
+    private void InitAllMonsters()
     {
-        // test ai 2 attack mine 1
-        MonsterBase ai = GetMonsterBase(MonsterCampId.AI, 1);
-        MonsterBase mine = GetMonsterBase(MonsterCampId.Mine, 0);
-        ai.Fight(ref mine);
+        // aiPlayer.InitGameStartMonsters();
+        // player.InitGameStartMonsters();
     }
 
-    public MonsterBase GetMonsterBase(MonsterCampId id, int index)
+    private void InitGameStartCard()
     {
-        if (id == MonsterCampId.AI)
-        {
-            return monsterList[index];
-        }
-        if (id == MonsterCampId.Mine)
-        {
-            return monsterList[maxNum + index];
-        }
-        return null;
+        // TODO config
+        int firstDrawCardNum = 4;
+        aiPlayer.EachRoundDrawCard(firstDrawCardNum);
+        player.EachRoundDrawCard(firstDrawCardNum);
     }
 
     public void EndRound()
@@ -80,25 +72,28 @@ public class Gamecore : Singleton<Gamecore>
         // calc all status
         currentRound += 1;
 
+        // draw card
+        // if round is odd and ai not action first, or round is even and ai action first, should be ai round
+        if ((currentRound % 2 == 1 && !aiPlayer.isActionFirst) || 
+            (currentRound % 2 == 0 && aiPlayer.isActionFirst))
+        {
+            gameRoundState = CampId.AI;
+            aiPlayer.EachRoundDrawCard(aiPlayer.eachRoundDrawCardNum);
+        }
+        else
+        {
+            gameRoundState = CampId.Mine;
+            player.EachRoundDrawCard(player.eachRoundDrawCardNum);
+        }
+
         // turn to next round
         SetNextRoundTime();
-        PrintGamecoreInfo();
     }
 
     private void SetNextRoundTime()
     {
         TimeSpan time = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
         nextRoundTime = Convert.ToInt64(time.TotalSeconds) + eachRoundTime;
-    }
-
-    private void PrintGamecoreInfo()
-    {
-        string monsterStatus = "";
-        for (int i = 0; i < 2 * maxNum; i++)
-        {
-            monsterStatus += monsterList[i].PrintStatus();
-        }
-        Debug.Log("currentRound: " + currentRound + " nextRoundTime: " + nextRoundTime + " status: " + monsterStatus);
     }
 
     public void Update()

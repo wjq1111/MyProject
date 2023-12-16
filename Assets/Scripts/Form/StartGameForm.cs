@@ -16,6 +16,9 @@ public class StartGameForm : MonoBehaviour
     public Button endRoundButton;
     public Button exitGameButton;
 
+    public Button printPlayerButton;
+    public Button printAIPlayerButton;
+
     private void Awake()
     {
         // TODO:make these strings to configs
@@ -28,6 +31,14 @@ public class StartGameForm : MonoBehaviour
         endRoundButton = GameObject.Find("EndRoundButton").gameObject.GetComponent<Button>();
         endRoundButton.GetComponent<UIEventScript>().onClickEventId = EventId.OnClickEndRoundButton;
         EventManager.Instance.AddEventListener(EventId.OnClickEndRoundButton, OnClickEndRoundButton);
+
+        printPlayerButton = GameObject.Find("PrintPlayerButton").gameObject.GetComponent<Button>();
+        printPlayerButton.GetComponent<UIEventScript>().onClickEventId = EventId.OnClickPrintPlayerButton;
+        EventManager.Instance.AddEventListener(EventId.OnClickPrintPlayerButton, OnClickPrintPlayerButton);
+
+        printAIPlayerButton = GameObject.Find("PrintAIPlayerButton").gameObject.GetComponent<Button>();
+        printAIPlayerButton.GetComponent<UIEventScript>().onClickEventId = EventId.OnClickPrintAIPlayerButton;
+        EventManager.Instance.AddEventListener(EventId.OnClickPrintAIPlayerButton, OnClickPrintAIPlayerButton);
 
         exitGameButton = GameObject.Find("ExitGameButton").gameObject.GetComponent<Button>();
         exitGameButton.GetComponent<UIEventScript>().onClickEventId = EventId.OnClickExitGameButton;
@@ -43,6 +54,8 @@ public class StartGameForm : MonoBehaviour
     {
         EventManager.Instance.RemoveEventListener(EventId.OnClickEndRoundButton, OnClickEndRoundButton);
         EventManager.Instance.RemoveEventListener(EventId.OnClickExitGameButton, OnClickExitGameButton);
+        EventManager.Instance.RemoveEventListener(EventId.OnClickPrintPlayerButton, OnClickPrintPlayerButton);
+        EventManager.Instance.RemoveEventListener(EventId.OnClickPrintAIPlayerButton, OnClickPrintAIPlayerButton);
     }
 
     private void Update()
@@ -52,14 +65,22 @@ public class StartGameForm : MonoBehaviour
 
     public void OnClickEndRoundButton()
     {
-        Debug.Log("OnClickEndRoundButton");
         Gamecore.Instance.EndRound();
     }
 
     public void OnClickExitGameButton()
     {
-        // TODO temp attack button
-        Debug.Log("OnClickExitGameButton");
-        Gamecore.Instance.TestAttack();
+        // temp use card
+        Gamecore.Instance.player.DefaultUseCard();
+    }
+
+    public void OnClickPrintPlayerButton()
+    {
+        Gamecore.Instance.player.PrintPlayer();
+    }
+
+    public void OnClickPrintAIPlayerButton()
+    {
+        Gamecore.Instance.aiPlayer.PrintPlayer();
     }
 }

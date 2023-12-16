@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Manager\FormManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIScript.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
     <Compile Include="Assets\Scripts\Manager\EventManager.cs" />
     <Compile Include="Assets\Scripts\StartGameFsm.cs" />
@@ -72,6 +73,8 @@
     <Compile Include="Assets\Scripts\Gamecore\Monster\MonsterBase.cs" />
     <Compile Include="Assets\Scripts\Form\LobbyForm.cs" />
     <Compile Include="Assets\Scripts\StateRule.cs" />
+    <Compile Include="Assets\Scripts\Config\AllocGid.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Card\Card.cs" />
     <Compile Include="Assets\Scripts\Manager\ConfigManager.cs" />
     <Compile Include="Assets\Scripts\Utils\MonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Form\StartGameForm.cs" />

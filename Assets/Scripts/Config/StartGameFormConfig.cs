@@ -15,6 +15,6 @@ public class StartGameFormConfig
 
     public void Print()
     {
-        Debug.Log("debug:" + item.number);
+
     }
 }
