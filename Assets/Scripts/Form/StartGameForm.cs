@@ -18,6 +18,7 @@ public class StartGameForm : MonoBehaviour
 
     private void Awake()
     {
+        // TODO:make these strings to configs
         tempImagePath = "Images/temp";
         playerImage = "Player/Image";
         playerHp = "Player/Hp";
@@ -44,13 +45,21 @@ public class StartGameForm : MonoBehaviour
         EventManager.Instance.RemoveEventListener(EventId.OnClickExitGameButton, OnClickExitGameButton);
     }
 
+    private void Update()
+    {
+        Gamecore.Instance.Update();
+    }
+
     public void OnClickEndRoundButton()
     {
-        Debug.Log("OnClickButton1");
+        Debug.Log("OnClickEndRoundButton");
+        Gamecore.Instance.EndRound();
     }
 
     public void OnClickExitGameButton()
     {
-        Debug.Log("OnClickButton2");
+        // TODO temp attack button
+        Debug.Log("OnClickExitGameButton");
+        Gamecore.Instance.TestAttack();
     }
 }

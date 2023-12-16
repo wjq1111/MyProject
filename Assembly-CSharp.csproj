@@ -65,9 +65,11 @@
     <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
     <Compile Include="Assets\Scripts\Manager\EventManager.cs" />
     <Compile Include="Assets\Scripts\StartGameFsm.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Gamecore.cs" />
     <Compile Include="Assets\Scripts\Config\StartGameFormConfig.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Monster\MonsterBase.cs" />
     <Compile Include="Assets\Scripts\Form\LobbyForm.cs" />
     <Compile Include="Assets\Scripts\StateRule.cs" />
     <Compile Include="Assets\Scripts\Manager\ConfigManager.cs" />
