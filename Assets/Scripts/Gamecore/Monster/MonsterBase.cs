@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Xml.Schema;
 using UnityEngine;
 
-public enum MonsterCampId
-{
-    Invalid,
-    Mine,
-    AI,
-}
-
 // monster base logic
-public class MonsterBase : Singleton<MonsterBase>
+public class MonsterBase
 {
+    // this.id = cardBag.card.gid
+    public int id;
     public string monsterName;
-    private MonsterCampId monsterCampId;
+    public CampId monsterCampId;
 
     // attributes
     private int attack;
@@ -23,21 +18,39 @@ public class MonsterBase : Singleton<MonsterBase>
     private int actionNum;
     private int minDamage;
 
-    public override void Init()
+    public void InitMonsterBase()
     {
-        monsterName = "lgsb";
-        monsterCampId = MonsterCampId.Invalid;
-        actionNum = 1;
-        minDamage = 1;
+        monsterName = "lg not init";
+        monsterCampId = CampId.Invalid;
+        attack = 0;
+        defense = 0;
+        hp = 1;
+        actionNum = 0;
+        minDamage = 0;
     }
 
-    public void NewMonsterBase(string monsterName, MonsterCampId monsterCampId, int attack, int defense, int hp)
+    public MonsterBase(MonsterCard card, CampId campId)
+    {
+        InitMonsterBase();
+        this.id = card.gid;
+        this.monsterCampId = campId;
+        this.monsterName = card.outlookCardName;
+        this.attack = card.attack;
+        this.defense = card.defense;
+        this.hp = card.hp;
+        this.actionNum = card.actionNum;
+        this.minDamage = card.minDamage;
+    }
+
+    public void NewMonsterBase(string monsterName, CampId monsterCampId, int attack, int defense, int hp)
     {
         this.monsterName = monsterName;
         this.monsterCampId = monsterCampId;
         this.attack = attack;
         this.defense = defense;
         this.hp = hp;
+        actionNum = 1;
+        minDamage = 1;
     }
 
     public void Fight(ref MonsterBase targetMonster)
@@ -89,8 +102,15 @@ public class MonsterBase : Singleton<MonsterBase>
         targetMonster.hp = targetMonster.hp - damage;
     }
 
-    public string PrintStatus()
+    public string PrintMonster()
     {
-        return "name: " + monsterName + "campId: " + monsterCampId + " hp: " + hp + " attack: " + attack + " defense: " + defense;
+        string result = "";
+        result += "name: " + monsterName + "\n";
+        result += "gid: " + id + "\n";
+        result += "campId: " + monsterCampId + "\n";
+        result += "hp: " + hp + "\n";
+        result += "attack: " + attack + "\n";
+        result += "defense: " + defense + "\n";
+        return result;
     }
 }

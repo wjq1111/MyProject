@@ -79,7 +79,7 @@ public class FormManager : MonoSingleton<FormManager>
             canvas.sortingLayerID = formUILayerID;
 
             openingForms.Add(layer, openingForms.Count);
-            Debug.Log("Load Prefab" + formName);
+            // Debug.Log("Load Prefab" + formName);
         }
         else
         {

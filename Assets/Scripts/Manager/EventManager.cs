@@ -14,6 +14,10 @@ public enum EventId
     OnClickStartGameButton,
     OnClickEndRoundButton,
     OnClickExitGameButton,
+
+    // For test
+    OnClickPrintPlayerButton,
+    OnClickPrintAIPlayerButton,
 }
 
 public class EventManager : Singleton<EventManager>

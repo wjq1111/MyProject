@@ -13,7 +13,7 @@ public class ConfigManager : Singleton<ConfigManager>
     {
         LoadJson();
         PrintConfig();
-        Debug.Log("Load Config done");
+        // Debug.Log("Load Config done");
     }
 
     private void LoadJson()
@@ -23,7 +23,6 @@ public class ConfigManager : Singleton<ConfigManager>
 
     private T LoadCfgFromJSON<T>(string path)
     {
-        Debug.Log(path);
         string json = File.ReadAllText(path);
         return JsonUtility.FromJson<T>(json);
     }
