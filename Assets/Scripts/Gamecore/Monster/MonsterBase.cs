@@ -6,16 +6,22 @@ using UnityEngine;
 // monster base logic
 public class MonsterBase
 {
-    // this.id = cardBag.card.gid
+    // 怪物唯一id，和将怪物打出的卡片的唯一id相同
     public int id;
+    // 怪物名称
     public string monsterName;
+    // 怪物所属阵营
     public CampId monsterCampId;
 
-    // attributes
+    // 怪物攻击
     private int attack;
+    // 怪物防御
     private int defense;
+    // 怪物血量
     private int hp;
+    // 怪物行动次数
     private int actionNum;
+    // 怪物攻击被防御住时造成的最低伤害
     private int minDamage;
 
     public void InitMonsterBase()
@@ -42,17 +48,7 @@ public class MonsterBase
         this.minDamage = card.minDamage;
     }
 
-    public void NewMonsterBase(string monsterName, CampId monsterCampId, int attack, int defense, int hp)
-    {
-        this.monsterName = monsterName;
-        this.monsterCampId = monsterCampId;
-        this.attack = attack;
-        this.defense = defense;
-        this.hp = hp;
-        actionNum = 1;
-        minDamage = 1;
-    }
-
+    // 怪物攻击
     public void Fight(ref MonsterBase targetMonster)
     {
         // CalcStatus
@@ -66,6 +62,7 @@ public class MonsterBase
         CalcTargetHp(ref targetMonster);
     }
 
+    // 计算行动次数
     public bool CalcActionNum()
     {
         if (actionNum >= 1)
@@ -76,6 +73,7 @@ public class MonsterBase
         return false;
     }
 
+    // 计算发起方血量
     public void CalcThisHp(ref MonsterBase targetMonster)
     {
         // mine.hp = mine.hp - (target.attack - mine.defense)
@@ -89,6 +87,7 @@ public class MonsterBase
         this.hp = this.hp - damage;
     }
 
+    // 计算攻击方血量
     public void CalcTargetHp(ref MonsterBase targetMonster)
     {
         // target.hp = target.hp - (mine.attack - target.defense)
