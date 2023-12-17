@@ -7,14 +7,20 @@ using UnityEngine;
 
 public class Gamecore : Singleton<Gamecore>
 {
+    // 当前回合数
     public int currentRound;
+    // 最大回合数
     private int maxRound;
+    // 每回合时间
     private int eachRoundTime;
+    // 下回合更新时间
     private long nextRoundTime;
 
+    // 己方玩家
     public Player player;
+    // 敌方玩家
     public Player aiPlayer;
-
+    // 当前回合是谁行动
     public CampId gameRoundState;
 
     public override void Init()

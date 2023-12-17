@@ -54,6 +54,7 @@ public class Player
         InitCardBag();
     }
 
+    // 初始化卡片背包
     private void InitCardBag()
     {
         cardBag = new List<CardBase>(maxCardNum);
@@ -101,6 +102,7 @@ public class Player
         Debug.Log(str);
     }
 
+    // 初始化游戏启动时怪物
     public void InitGameStartMonsters()
     {
         // TODO use config to init monsters, now directly write them
@@ -113,6 +115,7 @@ public class Player
         }
     }
 
+    // 每回合抽卡
     public void EachRoundDrawCard(int number)
     {
         List<CardBase> canDrawCard = CalcCanDrawCard();
@@ -135,6 +138,7 @@ public class Player
         UseCard(handCardList[0]);
     }
 
+    // 使用卡片
     public void UseCard(CardBase card)
     {
         if (card.useCardType == UseCardType.MonsterCard)
@@ -150,6 +154,7 @@ public class Player
         handCardList.Remove(card);
     }
 
+    // 使用召唤怪物卡
     private void SummonMonster(MonsterCard monsterCard)
     {
         if (monsterList.Count == maxMonsterNum)
@@ -162,6 +167,7 @@ public class Player
         monsterList.Add(monster);
     }
 
+    // 计算可以抽卡的集合
     private List<CardBase> CalcCanDrawCard()
     {
         List<CardBase> result = new List<CardBase>();

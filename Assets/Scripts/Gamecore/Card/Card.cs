@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 卡片基类和各种卡片的实现
 
+// 卡片使用效果类型
 public enum UseCardType
 {
     MonsterCard,
@@ -13,9 +15,11 @@ public class CardBase
 {
     // 全局唯一的卡片id
     public int gid;
+    // 卡片使用效果类型
     public UseCardType useCardType;
-
+    // 卡片名称
     public string cardName;
+    // 卡片外显名称
     public string outlookCardName;
 
     public CardBase()
@@ -35,10 +39,15 @@ public class CardBase
 
 public class MonsterCard : CardBase
 {
+    // 怪物卡攻击
     public int attack;
+    // 怪物卡防御
     public int defense;
+    // 怪物卡血量
     public int hp;
+    // 怪物卡行动次数
     public int actionNum;
+    // 怪物卡攻击时，如果被防御住，造成的最低伤害
     public int minDamage;
 
     public MonsterCard() { }
@@ -51,6 +60,7 @@ public class MonsterCard : CardBase
         this.outlookCardName = card.outlookCardName;
     }
 
+    // 初始化怪物
     public void InitMonster()
     {
         // config, id -> cfg
