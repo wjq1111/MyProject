@@ -109,9 +109,26 @@ public class Player
         for (int i = 0; i < maxMonsterNum; i++)
         {
             MonsterCard monsterCard = new MonsterCard();
-            monsterCard.InitMonster();
+            monsterCard.Init();
             MonsterBase monster = new MonsterBase(monsterCard, campId);
             monsterList.Add(monster);
+        }
+    }
+
+    // 操作怪物发起攻击
+    public void Fight(int index, int oppoIndex)
+    {
+        MonsterBase myMonster = monsterList[index];
+        MonsterBase oppoMonster = Gamecore.Instance.aiPlayer.monsterList[oppoIndex];
+        myMonster.Fight(ref oppoMonster);
+
+        if (myMonster.IsDead())
+        {
+            monsterList.RemoveAt(index);
+        }
+        if (oppoMonster.IsDead())
+        {
+            Gamecore.Instance.aiPlayer.monsterList.RemoveAt(oppoIndex);
         }
     }
 
@@ -135,16 +152,27 @@ public class Player
 
     public void DefaultUseCard()
     {
-        UseCard(handCardList[0]);
+        UseCard(0, 0);
     }
 
     // 使用卡片
-    public void UseCard(CardBase card)
+    public void UseCard(int cardIndex, int monsterIndex)
     {
+        if (cardIndex > handCardList.Count)
+        {
+            Debug.LogError("can not use card" + cardIndex + " " + handCardList.Count);
+            return;
+        }
+        CardBase card = handCardList[cardIndex];
         if (card.useCardType == UseCardType.MonsterCard)
         {
             MonsterCard monsterCard = new(card);
-            SummonMonster(monsterCard);
+            OnUseMonsterCard(monsterCard, 0);
+        }
+        else if (card.useCardType == UseCardType.AttributeCard)
+        {
+            AttributeCard attributeCard = new(card);
+            OnUseAttributeCard(attributeCard, monsterIndex);
         }
         else if (card.useCardType == UseCardType.LGCard)
         {
@@ -155,16 +183,34 @@ public class Player
     }
 
     // 使用召唤怪物卡
-    private void SummonMonster(MonsterCard monsterCard)
+    private void OnUseMonsterCard(MonsterCard monsterCard, int index)
     {
         if (monsterList.Count == maxMonsterNum)
         {
             Debug.LogError("monsterList.Count == maxMonsterNum");
             return;
         }
-        monsterCard.InitMonster();
+        if (monsterList[index] != null)
+        {
+            Debug.LogError("already have a monster");
+            return;
+        }
+        monsterCard.Init();
         MonsterBase monster = new MonsterBase(monsterCard, this.campId);
-        monsterList.Add(monster);
+        monsterList[index] = monster;
+    }
+
+    // 使用属性卡        
+    private void OnUseAttributeCard(AttributeCard attributeCard, int index)
+    {
+        attributeCard.Init();
+        if (index > maxMonsterNum)
+        {
+            Debug.LogError("index > maxMonsterNum:" + index + " " + maxMonsterNum);
+            return;
+        }
+        MonsterBase monster = monsterList[index];
+        monster.AddAttribute(attributeCard);
     }
 
     // 计算可以抽卡的集合

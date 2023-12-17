@@ -51,7 +51,6 @@ public class MonsterBase
     // 怪物攻击
     public void Fight(ref MonsterBase targetMonster)
     {
-        // CalcStatus
         bool canAct = CalcActionNum();
         if (!canAct)
         {
@@ -99,6 +98,22 @@ public class MonsterBase
             damage = this.minDamage;
         }
         targetMonster.hp = targetMonster.hp - damage;
+    }
+
+    // 给某个怪加属性buff
+    public void AddAttribute(AttributeCard attributeCard)
+    {
+        this.attack += attributeCard.addAttack;
+        this.defense += attributeCard.addDefense;
+        this.hp += attributeCard.addHp;
+        this.actionNum += attributeCard.addActionNum;
+        Debug.Log("add attribute id:" + attributeCard.gid);
+    }
+
+    // 判断怪物是否死亡
+    public bool IsDead()
+    {
+        return this.hp <= 0;
     }
 
     public string PrintMonster()
