@@ -78,28 +78,28 @@ public class Player
         }
     }
 
-    public void PrintPlayer()
+    public override string ToString()
     {
         string str = "";
         str += "camp: " + this.campId + "\n";
         str += "cardBag: " + this.cardBag.Count + "\n";
         str += "cardBag:";
         foreach (CardBase card in this.cardBag) {
-            str += card.PrintCard();
+            str += card.ToString();
         }
         str += "\n";
         str += "handCardList:";
         foreach (CardBase card in this.handCardList)
         {
-            str += card.PrintCard();
+            str += card.ToString();
         }
         str += "\n";
         str += "monsterList:";
         foreach (MonsterBase monster in this.monsterList)
         {
-            str += monster.PrintMonster();
+            str += monster.ToString();
         }
-        Debug.Log(str);
+        return str;
     }
 
     // 初始化游戏启动时怪物

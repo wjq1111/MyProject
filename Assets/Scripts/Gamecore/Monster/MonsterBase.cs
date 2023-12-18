@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Schema;
 using UnityEngine;
 
-// monster base logic
+// 怪物的基础逻辑
 public class MonsterBase
 {
     // 怪物唯一id，和将怪物打出的卡片的唯一id相同
@@ -116,7 +116,7 @@ public class MonsterBase
         return this.hp <= 0;
     }
 
-    public string PrintMonster()
+    public override string ToString()
     {
         string result = "";
         result += "name: " + monsterName + "\n";

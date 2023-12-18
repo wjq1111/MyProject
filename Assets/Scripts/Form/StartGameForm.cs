@@ -76,11 +76,11 @@ public class StartGameForm : MonoBehaviour
 
     public void OnClickPrintPlayerButton()
     {
-        Gamecore.Instance.player.PrintPlayer();
+        Debug.Log(Gamecore.Instance.player.ToString());
     }
 
     public void OnClickPrintAIPlayerButton()
     {
-        Gamecore.Instance.aiPlayer.PrintPlayer();
+        Debug.Log(Gamecore.Instance.aiPlayer.ToString());
     }
 }
