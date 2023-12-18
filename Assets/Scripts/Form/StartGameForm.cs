@@ -60,27 +60,29 @@ public class StartGameForm : MonoBehaviour
 
     private void Update()
     {
-        Gamecore.Instance.Update();
+        if (Gamecore.Instance.gameStatus == GameStatus.OnGoing)
+        {
+            Gamecore.Instance.Update();
+        }
     }
 
     public void OnClickEndRoundButton()
     {
-        Gamecore.Instance.EndRound();
+        Gamecore.Instance.StartRound();
     }
 
     public void OnClickExitGameButton()
     {
         // temp use card
-        Gamecore.Instance.player.DefaultUseCard();
     }
 
     public void OnClickPrintPlayerButton()
     {
-        Debug.Log(Gamecore.Instance.player.ToString());
+        Debug.Log(Gamecore.Instance.GetPlayer(CampId.Myself).ToString());
     }
 
     public void OnClickPrintAIPlayerButton()
     {
-        Debug.Log(Gamecore.Instance.aiPlayer.ToString());
+        Debug.Log(Gamecore.Instance.GetPlayer(CampId.AI).ToString());
     }
 }

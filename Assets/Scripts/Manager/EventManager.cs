@@ -4,22 +4,6 @@ using System.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public enum EventId
-{
-    Invalid,
-    StartGame,
-    LoadGame,
-
-    // UI event callback
-    OnClickStartGameButton,
-    OnClickEndRoundButton,
-    OnClickExitGameButton,
-
-    // For test
-    OnClickPrintPlayerButton,
-    OnClickPrintAIPlayerButton,
-}
-
 public class EventManager : Singleton<EventManager>
 {
     public delegate void OnEventHandler();

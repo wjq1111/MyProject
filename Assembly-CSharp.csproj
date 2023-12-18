@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Gamecore\Gamecore.cs" />
     <Compile Include="Assets\Scripts\Config\StartGameFormConfig.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
+    <Compile Include="Assets\Scripts\Utils\Enum.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Card\CardBase.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Card\MonsterCard.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />

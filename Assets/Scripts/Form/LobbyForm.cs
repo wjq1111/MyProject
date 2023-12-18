@@ -22,5 +22,6 @@ public class LobbyForm : MonoBehaviour
     public void OnClickStartGameButton()
     {
         Debug.Log("OnClickStartGameButton");
+        Gamecore.Instance.SetGameStatus(GameStatus.OnGoing);
     }
 }

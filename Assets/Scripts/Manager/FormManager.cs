@@ -4,13 +4,6 @@ using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public enum FormLayer
-{
-    InvalidForm = -1,
-    LobbyForm,
-    StartGameForm,
-}
-
 public class FormManager : MonoSingleton<FormManager>
 {
     private int formUILayerID = 123456789;
