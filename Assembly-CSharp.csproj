@@ -69,12 +69,15 @@
     <Compile Include="Assets\Scripts\Gamecore\Gamecore.cs" />
     <Compile Include="Assets\Scripts\Config\StartGameFormConfig.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
+    <Compile Include="Assets\Scripts\Utils\Enum.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Card\CardBase.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Card\MonsterCard.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />
+    <Compile Include="Assets\Scripts\Gamecore\Card\AttributeCard.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Monster\MonsterBase.cs" />
     <Compile Include="Assets\Scripts\Form\LobbyForm.cs" />
     <Compile Include="Assets\Scripts\StateRule.cs" />
     <Compile Include="Assets\Scripts\Config\AllocGid.cs" />
-    <Compile Include="Assets\Scripts\Gamecore\Card\Card.cs" />
     <Compile Include="Assets\Scripts\Manager\ConfigManager.cs" />
     <Compile Include="Assets\Scripts\Utils\MonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Form\StartGameForm.cs" />
