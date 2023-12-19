@@ -14,15 +14,15 @@ public class MonsterBase
     public CampId monsterCampId;
 
     // 怪物攻击
-    private int attack;
+    public int attack;
     // 怪物防御
-    private int defense;
+    public int defense;
     // 怪物血量
-    private int hp;
+    public int hp;
     // 怪物行动次数
-    private int actionNum;
+    public int actionNum;
     // 怪物攻击被防御住时造成的最低伤害
-    private int minDamage;
+    public int minDamage;
 
     public void InitMonsterBase()
     {
@@ -33,6 +33,11 @@ public class MonsterBase
         hp = 1;
         actionNum = 0;
         minDamage = 0;
+    }
+
+    public MonsterBase()
+    {
+        InitMonsterBase();
     }
 
     public MonsterBase(MonsterCard card, CampId campId)
@@ -48,56 +53,24 @@ public class MonsterBase
         this.minDamage = card.minDamage;
     }
 
-    // 怪物攻击
-    public void Fight(ref MonsterBase targetMonster)
+    public bool CostActionNum()
     {
-        bool canAct = CalcActionNum();
-        if (!canAct)
+        if (actionNum < 1)
         {
-            return;
+            Debug.LogError("actionNum < 1");
+            return false;
         }
-
-        CalcThisHp(ref targetMonster);
-        CalcTargetHp(ref targetMonster);
+        actionNum -= 1;
+        return true;
     }
 
-    // 计算行动次数
-    public bool CalcActionNum()
+    public void Hurt(int damage)
     {
-        if (actionNum >= 1)
+        hp -= damage;
+        if (hp < 0)
         {
-            actionNum -= 1;
+            hp = 0;
         }
-        Debug.Log("can not action: " + actionNum);
-        return false;
-    }
-
-    // 计算发起方血量
-    public void CalcThisHp(ref MonsterBase targetMonster)
-    {
-        // mine.hp = mine.hp - (target.attack - mine.defense)
-        int damage = targetMonster.attack - this.defense;
-        if (damage < 0)
-        {
-            Debug.Log("this " + this.monsterName + " attack target" + targetMonster.monsterName);
-            Debug.Log("can not damage, target.attack" + targetMonster.attack + " this.defense " + this.defense);
-            damage = 0;
-        }
-        this.hp = this.hp - damage;
-    }
-
-    // 计算攻击方血量
-    public void CalcTargetHp(ref MonsterBase targetMonster)
-    {
-        // target.hp = target.hp - (mine.attack - target.defense)
-        int damage = this.attack - targetMonster.defense;
-        if (damage < 0)
-        {
-            Debug.Log("this " + this.monsterName + " attack target" + targetMonster.monsterName);
-            Debug.Log("can not damage, this.attack: " + this.attack + " target.defense: " + targetMonster.defense);
-            damage = this.minDamage;
-        }
-        targetMonster.hp = targetMonster.hp - damage;
     }
 
     // 给某个怪加属性buff

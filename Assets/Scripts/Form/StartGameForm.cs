@@ -60,10 +60,7 @@ public class StartGameForm : MonoBehaviour
 
     private void Update()
     {
-        if (Gamecore.Instance.gameStatus == GameStatus.OnGoing)
-        {
-            Gamecore.Instance.Update();
-        }
+        Gamecore.Instance.Update();
     }
 
     public void OnClickEndRoundButton()
@@ -74,6 +71,7 @@ public class StartGameForm : MonoBehaviour
     public void OnClickExitGameButton()
     {
         // temp use card
+        Gamecore.Instance.UseCard(CampId.Myself, Gamecore.Instance.GetPlayer(CampId.Myself).handCardList[0].gid);
     }
 
     public void OnClickPrintPlayerButton()

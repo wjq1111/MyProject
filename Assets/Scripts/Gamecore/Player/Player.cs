@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Player
 {
-    public int hp;
     // player camp
     public CampId campId;
 
@@ -18,6 +17,8 @@ public class Player
     public int maxMonsterNum;
     // max num of card
     public int maxCardNum;
+    // face
+    public MonsterBase face;
     // in-game monsters
     public List<MonsterBase> monsterList;
     // each round draw card number
@@ -28,7 +29,6 @@ public class Player
 
     public void Init()
     {
-        hp = 100;
         handCardList = new List<CardBase>();
         // TODO config
         maxMonsterNum = 4;
@@ -43,7 +43,7 @@ public class Player
         {
             isActionFirst = false;
         }
-
+        face = new MonsterBase();
         monsterList = new List<MonsterBase>(maxMonsterNum);
 
         InitCardBag();
@@ -75,7 +75,7 @@ public class Player
 
     public bool IsDead()
     {
-        return hp <= 0;
+        return face.IsDead();
     }
 
     // 获取怪物
@@ -131,7 +131,7 @@ public class Player
         }
     }
 
-    // 使用召唤怪物卡
+    // 使用怪物卡
     public void UseMonsterCard(MonsterCard monsterCard)
     {
         if (monsterList.Count == maxMonsterNum)
@@ -139,8 +139,7 @@ public class Player
             Debug.LogError("monsterList.Count == maxMonsterNum");
             return;
         }
-        monsterCard.Init();
-        MonsterBase monster = new MonsterBase(monsterCard, this.campId);
+        MonsterBase monster = new MonsterBase(monsterCard, campId);
         monsterList.Add(monster);
     }
 
@@ -168,17 +167,20 @@ public class Player
                 monster.AddAttribute(attributeCard);
             }
         }
-
     }
 
-    // 打脸扣血
-    public void FightFace(int damage)
+    public void AfterUseCard(int cardId)
     {
-        hp -= damage;
+        CardBase card = GetCard(cardId);
+        if (card == null)
+        {
+            return;
+        }
+        handCardList.Remove(card);
     }
 
     // 每回合抽卡
-    public void EachRoundDrawCard(int number)
+    public void EachRoundDrawCard()
     {
         List<CardBase> canDrawCard = CalcCanDrawCard();
 
@@ -188,7 +190,7 @@ public class Player
             return;
         }
 
-        for (int i = 0; i < number; i++)
+        for (int i = 0; i < eachRoundDrawCardNum; i++)
         {
             handCardList.Add(canDrawCard[i]);
             Debug.Log("player: " + this.campId + " each round draw card:" + canDrawCard[i].cardName);

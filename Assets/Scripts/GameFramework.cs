@@ -15,9 +15,11 @@ public class GameFramework : MonoSingleton<GameFramework>
         base.Awake();
 
         AllocGid.CreateInstance();
+        GameFsm.CreateInstance();
         ConfigManager.CreateInstance();
         EventManager.CreateInstance();
         FormManager.GetInstance();
+        Gamecore.CreateInstance();
 
         GameObject obj = GameObject.Find("MainCamera");
         gameCamera = obj.GetComponent<Camera>();
@@ -31,9 +33,11 @@ public class GameFramework : MonoSingleton<GameFramework>
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        Gamecore.DestroyInstance();
         FormManager.DestroyInstance();
         EventManager.DestroyInstance();
         ConfigManager.DestroyInstance();
+        GameFsm.DestroyInstance();
         AllocGid.DestroyInstance();
     }
 }
