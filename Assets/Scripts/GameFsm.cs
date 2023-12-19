@@ -1,56 +1,48 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
-public enum GameFsmState
-{
-    Invalid,
-    StartGame,
-}
 
-public class GameFsm
+public class GameFsm : Singleton<GameFsm>
 {
-    private static GameFsm instance;
+    public Dictionary<GameStatus, List<Action>> gameFsm = new Dictionary<GameStatus, List<Action>>();
 
-    public static GameFsm Instance { 
-        get
+    public override void Init()
+    {
+
+    }
+
+    public void AddFsm(GameStatus gameStatus, Action action)
+    {
+        if (!gameFsm.ContainsKey(gameStatus))
         {
-            if (instance == null)
+            List<Action> actionList = new List<Action>();
+            gameFsm.Add(gameStatus, actionList);
+        }
+        gameFsm[gameStatus].Add(action);
+    }
+
+    public void RemoveFsm(GameStatus gameStatus, Action action)
+    {
+        if (gameFsm.ContainsKey(gameStatus))
+        {
+            int index = gameFsm[gameStatus].IndexOf(action);
+            if (index > 0)
             {
-                instance = new GameFsm();
+                gameFsm[gameStatus].RemoveAt(index);
             }
-            return instance;
         }
     }
-    
-    public GameFsmState state;
 
-
-    // Start is called before the first frame update
-    void Start()
+    public void SetGameStatus(GameStatus result)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public virtual void AcceptEvent()
-    {
-        //Debug.Log("base accept event");
-    }
-
-    public virtual void DoSomething()
-    {
-        System.Threading.Thread.Sleep(2000);
-        Debug.Log("sleep finish");
-    }
-
-    public virtual void GenerateEvent()
-    {
-
+        if (gameFsm.ContainsKey(result))
+        {
+            foreach (var action in gameFsm[result])
+            {
+                action();
+            }
+        }
     }
 }

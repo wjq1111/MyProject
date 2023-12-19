@@ -11,9 +11,7 @@ public enum CampId
 {
     Invalid,
     Myself,
-    AI,
-    // all = myself + ai
-    All,
+    AI
 }
 
 // 属性卡使用目标类型

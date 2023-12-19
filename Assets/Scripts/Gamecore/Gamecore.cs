@@ -21,34 +21,64 @@ public class Gamecore : Singleton<Gamecore>
 
     // 当前回合是谁行动
     public CampId gameRoundState;
+    // 下个回合是谁行动
+    public CampId nextRoundState;
 
     public Dictionary<CampId, Player> playerDict;
+
+    public Dictionary<CampId, CampId> roundSeqDict;
 
     public override void Init()
     {
         // init values
         currentRound = 0;
-        gameStatus = GameStatus.Invalid;
 
         // TODO config
         maxRound = 20;
         eachRoundTime = 6000;
         playerDict = new Dictionary<CampId, Player>();
+        roundSeqDict = new Dictionary<CampId, CampId>();
+
+        GameFsm.Instance.AddFsm(GameStatus.OnGoing, StartGame);
+        GameFsm.Instance.AddFsm(GameStatus.Lose, EndGame);
+        GameFsm.Instance.AddFsm(GameStatus.Win, EndGame);
+
+        roundSeqDict.Add(CampId.Myself, CampId.AI);
+        roundSeqDict.Add(CampId.AI, CampId.Myself);
+    }
+
+    public override void Uninit()
+    {
+        base.Uninit();
+        GameFsm.Instance.RemoveFsm(GameStatus.OnGoing, StartGame);
+        GameFsm.Instance.RemoveFsm(GameStatus.Lose, EndGame);
+        GameFsm.Instance.RemoveFsm(GameStatus.Win, EndGame);
     }
 
     private void StartGame()
     {
         currentRound = 1;
+        gameStatus = GameStatus.Invalid;
+        nextRoundState = CampId.Myself;
         InitAllPlayers();
         InitAllMonsters();
         InitGameStartCard();
 
-        SetNextRoundTime();
+        StartRound();
     }
 
-    public void SetGameStatus(GameStatus result)
+    private void EndGame()
     {
-        gameStatus = result;
+        if (gameStatus == GameStatus.Win)
+        {
+            
+        }
+        else
+        {
+
+        }
+
+        // 清单局数据
     }
 
     private void InitAllPlayers()
@@ -80,9 +110,8 @@ public class Gamecore : Singleton<Gamecore>
     private void InitGameStartCard()
     {
         // TODO config
-        int firstDrawCardNum = 4;
-        GetPlayer(CampId.AI).EachRoundDrawCard(firstDrawCardNum);
-        GetPlayer(CampId.Myself).EachRoundDrawCard(firstDrawCardNum);
+        GetPlayer(CampId.AI).EachRoundDrawCard();
+        GetPlayer(CampId.Myself).EachRoundDrawCard();
     }
 
     // 攻击脸
@@ -93,20 +122,43 @@ public class Gamecore : Singleton<Gamecore>
             Debug.LogError("camp same, can not fight face");
             return;
         }
-        if (target != CampId.All)
+        MonsterBase sourceMonster = GetPlayer(CampId.Myself).face;
+        foreach (var player in playerDict)
         {
-            GetPlayer(target).FightFace(damage);
-        }
-        else
-        {
-            foreach (var player in playerDict)
+            if (player.Value.campId != source)
             {
-                if (player.Value.campId != source)
-                {
-                    player.Value.FightFace(damage);
-                }
+                MonsterFight(sourceMonster, player.Value.face);
             }
         }
+    }
+
+    // 计算伤害
+    public int CalcDamage(MonsterBase sourceMonster, MonsterBase targetMonster)
+    {
+        // mine.hp = mine.hp - (target.attack - mine.defense)
+        int damage = targetMonster.attack - sourceMonster.defense;
+        if (damage < 0)
+        {
+            Debug.Log("this " + sourceMonster.monsterName + " attack target" + targetMonster.monsterName);
+            Debug.Log("can not damage, target.attack" + targetMonster.attack + " this.defense " + sourceMonster.defense);
+            damage = 0;
+        }
+        return damage;
+    }
+
+    public void MonsterFight(MonsterBase sourceMonster, MonsterBase targetMonster)
+    {
+        // 计算行动次数
+        bool canAct = sourceMonster.CostActionNum();
+        if (!canAct)
+        {
+            return;
+        }
+
+        int damage = CalcDamage(sourceMonster, targetMonster);
+        targetMonster.Hurt(damage);
+        damage = CalcDamage(targetMonster, sourceMonster);
+        sourceMonster.Hurt(damage);
     }
 
     // 攻击
@@ -114,25 +166,36 @@ public class Gamecore : Singleton<Gamecore>
     {
         MonsterBase monster1 = GetPlayer(source).GetMonster(sourceMonsterIndex);
         MonsterBase monster2 = GetPlayer(target).GetMonster(targetMonsterIndex);
-        monster1.Fight(ref monster2);
+        MonsterFight(monster1, monster2);
 
         CalcStatus();
     }
 
+    // 使用召唤怪物卡
+    public void UseMonsterCard(CampId id, CardBase card)
+    {
+        Player player = GetPlayer(id);
+        if (card.useCardType == UseCardType.MonsterCard)
+        {
+            MonsterCard monsterCard = new(card);
+            monsterCard.Init();
+            player.UseMonsterCard(monsterCard);
+        }
+    }
+
     // 使用卡片，source是发起方，target是目标方，targetMonsterIndex是目标怪物id
-    public void UseCard(CampId source, int cardId, CampId target, List<int> targetMonsterIndex)
+    public void UseCard(CampId source, int cardId, CampId target = CampId.Invalid, List<int> targetMonsterIndex = null)
     {
         CardBase card = GetPlayer(source).GetCard(cardId);
         if (card.useCardType == UseCardType.MonsterCard)
         {
             // 召唤怪物卡只会给自己用，所以source和target要一致
-            if (source != target)
+            if (target != CampId.Invalid)
             {
                 Debug.LogError("not same camp, can not use card");
                 return;
             }
-            MonsterCard monsterCard = new MonsterCard(card);
-            GetPlayer(target).UseMonsterCard(monsterCard);
+            UseMonsterCard(source, card);
         }
         else if (card.useCardType == UseCardType.AttributeCard)
         {
@@ -171,11 +234,6 @@ public class Gamecore : Singleton<Gamecore>
             else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.All)
             {
                 // source对全体使用属性卡片
-                if (target != CampId.All)
-                {
-                    Debug.LogError("target camp not all, can not use card");
-                    return;
-                }
                 if (attributeCard.useNum != 0)
                 {
                     Debug.LogError("not same use num, can not use card");
@@ -189,6 +247,8 @@ public class Gamecore : Singleton<Gamecore>
         }
 
         CalcStatus();
+
+        GetPlayer(source).AfterUseCard(cardId);
     }
 
     // 计算场面状态
@@ -203,7 +263,7 @@ public class Gamecore : Singleton<Gamecore>
             {
                 if (player.Value.campId == CampId.Myself)
                 {
-                    SetGameStatus(GameStatus.Lose);
+                    GameFsm.Instance.SetGameStatus(GameStatus.Lose);
                     return;
                 }
                 deadPlayer.Add(player.Value);
@@ -213,7 +273,7 @@ public class Gamecore : Singleton<Gamecore>
         // 玩家没挂，其他人都挂了
         if (deadPlayer.Count == playerDict.Count - 1)
         {
-            SetGameStatus(GameStatus.Win);
+            GameFsm.Instance.SetGameStatus(GameStatus.Win);
             return;
         }
 
@@ -228,31 +288,27 @@ public class Gamecore : Singleton<Gamecore>
         }
     }
 
-    // 开始回合
+    // 开始回合，实际上也是回合结算函数
     public void StartRound()
     {
+        // 到了下个回合
+        currentRound += 1;
+
         if (currentRound >= maxRound)
         {
             Debug.Log("round over");
             return;
         }
 
-        // 计算状态
-        CalcStatus();
+        // 计算现在是谁动，下个回合是谁动
+        gameRoundState = nextRoundState;
+        nextRoundState = roundSeqDict[gameRoundState];
 
-        // draw card
-        // if round is odd and ai not action first, or round is even and ai action first, should be ai round
-        if ((currentRound % 2 == 1 && !GetPlayer(CampId.Myself).isActionFirst) || 
-            (currentRound % 2 == 0 && GetPlayer(CampId.AI).isActionFirst))
-        {
-            gameRoundState = CampId.AI;
-            GetPlayer(CampId.AI).EachRoundDrawCard(GetPlayer(CampId.AI).eachRoundDrawCardNum);
-        }
-        else
-        {
-            gameRoundState = CampId.Myself;
-            GetPlayer(CampId.Myself).EachRoundDrawCard(GetPlayer(CampId.Myself).eachRoundDrawCardNum);
-        }
+        // 抽卡
+        GetPlayer(gameRoundState).EachRoundDrawCard();
+
+        // 设置下个回合时间
+        SetNextRoundTime();
     }
 
     // 设置下一个回合时间
@@ -265,18 +321,7 @@ public class Gamecore : Singleton<Gamecore>
     // 主驱动函数
     public void Update()
     {
-        if (currentRound >= maxRound)
-        {
-            Debug.Log("round max, end game");
-            SetGameStatus(GameStatus.Lose);
-            return;
-        }
-
-        if (currentRound == 0)
-        {
-            StartGame();
-        }
-
+        // TODO 优化 realtimeSinceStartup
         TimeSpan time = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
         long now = Convert.ToInt64(time.TotalSeconds);
         if (now < nextRoundTime)
@@ -284,16 +329,12 @@ public class Gamecore : Singleton<Gamecore>
             return;
         }
 
-        // 设置下个回合时间
-        SetNextRoundTime();
+        if (gameStatus != GameStatus.OnGoing)
+        {
+            return;
+        }
 
         // 开始这个回合
         StartRound();
-
-        // AI出牌，现在还没有ai出牌逻辑，于是ai只抽卡不出牌
-
-
-        // 到了下个回合
-        currentRound += 1;
     }
 }
