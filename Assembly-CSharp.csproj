@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Manager\FormManager.cs" />
+    <Compile Include="Assets\Scripts\ExcelHelper.cs" />
     <Compile Include="Assets\Scripts\UI\UIScript.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Assets\Scripts\GameFramework.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Card\AttributeCard.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Monster\MonsterBase.cs" />
+    <Compile Include="Assets\Scripts\Config\test.cs" />
     <Compile Include="Assets\Scripts\Form\LobbyForm.cs" />
     <Compile Include="Assets\Scripts\Config\AllocGid.cs" />
     <Compile Include="Assets\Scripts\Manager\ConfigManager.cs" />
@@ -442,6 +444,30 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>Assets\Plugins\NPIO\NPOI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>Assets\Plugins\NPIO\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>Assets\Plugins\NPIO\NPOI.OOXML.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>Assets\Plugins\NPIO\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>Assets\Plugins\NPIO\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>Assets\Plugins\NPIO\BouncyCastle.Crypto.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Android.Types">

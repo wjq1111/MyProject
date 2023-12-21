@@ -91,13 +91,13 @@ public class MonsterBase
 
     public override string ToString()
     {
-        string result = "";
-        result += "name: " + monsterName + "\n";
-        result += "gid: " + id + "\n";
-        result += "campId: " + monsterCampId + "\n";
-        result += "hp: " + hp + "\n";
-        result += "attack: " + attack + "\n";
-        result += "defense: " + defense + "\n";
-        return result;
+        string str = "";
+        str += "¹ÖÎïÃû³Æ: " + monsterName + "\n";
+        str += "gid: " + id + "\n";
+        str += "ÕóÓª: " + monsterCampId + "\n";
+        str += "ÑªÁ¿: " + hp + "\n";
+        str += "¹¥»÷: " + attack + "\n";
+        str += "·ÀÓù: " + defense + "\n";
+        return str;
     }
 }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class StartGameForm : MonoBehaviour
@@ -18,6 +17,8 @@ public class StartGameForm : MonoBehaviour
 
     public Button printPlayerButton;
     public Button printAIPlayerButton;
+
+    public Text statusText;
 
     private void Awake()
     {
@@ -49,6 +50,9 @@ public class StartGameForm : MonoBehaviour
         GameObject.Find(playerHp).GetComponent<Image>().sprite = sprite;
         GameObject.Find(monsterImage).GetComponent<Image>().sprite = sprite;
         GameObject.Find(monsterHp).GetComponent<Image>().sprite = sprite;
+
+        statusText = GameObject.Find("DebugStatus/Viewport/Content").gameObject.GetComponent<Text>();
+        EventManager.Instance.AddEventListener(EventId.FlushDebugStatus, OnFlushDebugStatus);
     }
     private void OnDestroy()
     {
@@ -61,6 +65,12 @@ public class StartGameForm : MonoBehaviour
     private void Update()
     {
         Gamecore.Instance.Update();
+    }
+
+    private void OnFlushDebugStatus()
+    {
+        statusText.color = Color.white;
+        statusText.text = Gamecore.Instance.ToString();
     }
 
     public void OnClickEndRoundButton()

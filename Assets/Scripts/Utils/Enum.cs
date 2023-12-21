@@ -23,6 +23,14 @@ public enum AttributeCardUseTargetType
     All,
 }
 
+// ¿¨Æ¬ÄÜÁ¦
+public enum Ability
+{
+    Invalid,
+    SummonMonster,
+    HurtMonster
+}
+
 // Í¼²ã²ã¼¶
 public enum FormLayer
 {
@@ -46,4 +54,5 @@ public enum EventId
     // For test
     OnClickPrintPlayerButton,
     OnClickPrintAIPlayerButton,
+    FlushDebugStatus,
 }
