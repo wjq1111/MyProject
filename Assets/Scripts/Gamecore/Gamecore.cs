@@ -174,12 +174,63 @@ public class Gamecore : Singleton<Gamecore>
     // 使用召唤怪物卡
     public void UseMonsterCard(CampId id, CardBase card)
     {
-        Player player = GetPlayer(id);
-        if (card.useCardType == UseCardType.MonsterCard)
+        if (card.useCardType != UseCardType.MonsterCard)
         {
-            MonsterCard monsterCard = new(card);
-            monsterCard.Init();
-            player.UseMonsterCard(monsterCard);
+            return;
+        }
+
+        Player player = GetPlayer(id);
+        MonsterCard monsterCard = new MonsterCard(card);
+        monsterCard.Init();
+        player.UseMonsterCard(monsterCard);
+    }
+
+    public List<int> GetAllMonsterIndex(CampId id)
+    {
+        Player player = GetPlayer(id);
+        List<int> result = player.GetAllMonsterIndex();
+        return result;
+    }
+
+    public void UseAttributeCard(CampId source, CampId target, CardBase card, List<int> targetMonsterIndex)
+    {
+        if (card.useCardType != UseCardType.AttributeCard)
+        {
+            return;
+        }
+
+        Player sourcePlayer = GetPlayer(source);
+        Player targetPlayer = GetPlayer(target);
+        AttributeCard attributeCard = new AttributeCard(card);
+        attributeCard.Init();
+        if (attributeCard.useNum != targetMonsterIndex.Count)
+        {
+            Debug.LogError("not same use num, can not use card");
+            return;
+        }
+
+        if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.MySelf)
+        {
+            // 用一个对自己生效的卡片
+            sourcePlayer.UseAttributeCard(attributeCard, targetMonsterIndex);
+        }
+        else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.Other)
+        {
+            // 用一个对对方生效的卡片
+            targetPlayer.UseAttributeCard(attributeCard, targetMonsterIndex);
+        }
+        else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.All)
+        {
+            // 对全体使用属性卡片
+            if (attributeCard.useNum != 0)
+            {
+                Debug.LogError("not same use num, can not use card");
+                return;
+            }
+            foreach (var player in playerDict)
+            {
+                player.Value.UseAttributeCard(attributeCard, GetAllMonsterIndex(player.Value.campId));
+            }
         }
     }
 
@@ -187,6 +238,8 @@ public class Gamecore : Singleton<Gamecore>
     public void UseCard(CampId source, int cardId, CampId target = CampId.Invalid, List<int> targetMonsterIndex = null)
     {
         CardBase card = GetPlayer(source).GetCard(cardId);
+
+        // 使用卡
         if (card.useCardType == UseCardType.MonsterCard)
         {
             // 召唤怪物卡只会给自己用，所以source和target要一致
@@ -199,56 +252,36 @@ public class Gamecore : Singleton<Gamecore>
         }
         else if (card.useCardType == UseCardType.AttributeCard)
         {
-            // 属性卡可能给自己或者别人用，要分别讨论不同的属性卡
-            AttributeCard attributeCard = new AttributeCard(card);
-            if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.MySelf)
+            // 使用属性卡目标怪物index不能是空
+            if (targetMonsterIndex != null)
             {
-                // source用一个对自己生效的卡片
-                if (source != target)
-                {
-                    Debug.LogError("not same camp, can not use card");
-                    return;
-                }
-                if (attributeCard.useNum != targetMonsterIndex.Count)
-                {
-                    Debug.LogError("not same use num, can not use card");
-                    return;
-                }
-                GetPlayer(target).UseAttributeCard(attributeCard, targetMonsterIndex);
+                Debug.LogError("targetMonsterIndex null, can not use card");
+                return;
             }
-            else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.Other)
+            UseAttributeCard(source, target, card, targetMonsterIndex);
+        }
+
+        // 卡的能力
+        foreach (var cardAbility in card.cardAbility)
+        {
+            if (cardAbility.ability == Ability.SummonMonster)
             {
-                // source用一个对对方生效的卡片
-                if (source == target)
-                {
-                    Debug.LogError("same camp, can not use card");
-                    return;
-                }
-                if (attributeCard.useNum != targetMonsterIndex.Count)
-                {
-                    Debug.LogError("not same use num, can not use card");
-                    return;
-                }
-                GetPlayer(target).UseAttributeCard(attributeCard, targetMonsterIndex);
+                CardAbilitySummonMonster cardAbilitySummonMonster = new CardAbilitySummonMonster(cardAbility);
+                // 召唤出来的怪物应该在这个索引的后面
+                UseMonsterCard(source, cardAbilitySummonMonster.monsterCard);
             }
-            else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.All)
+            else if (cardAbility.ability == Ability.HurtMonster)
             {
-                // source对全体使用属性卡片
-                if (attributeCard.useNum != 0)
-                {
-                    Debug.LogError("not same use num, can not use card");
-                    return;
-                }
-                foreach (var player in playerDict)
-                {
-                    player.Value.UseAttributeCard(attributeCard, null);
-                }
+                CardAbilityHurtMonster cardAbilityHurtMonster = new CardAbilityHurtMonster(cardAbility);
+                UseAttributeCard(source, target, cardAbilityHurtMonster.attributeCard, targetMonsterIndex);
             }
         }
 
+        // 计算场面状态
         CalcStatus();
 
-        GetPlayer(source).AfterUseCard(cardId);
+        // 去掉手牌
+        GetPlayer(source).RemoveCard(cardId);
     }
 
     // 计算场面状态
@@ -336,5 +369,17 @@ public class Gamecore : Singleton<Gamecore>
 
         // 开始这个回合
         StartRound();
+    }
+
+    // 当前状态
+    public override string ToString()
+    {
+        string text = "";
+        foreach (var player in playerDict)
+        {
+            text += player.Value.ToString();
+            text += "\n";
+        }
+        return text;
     }
 }

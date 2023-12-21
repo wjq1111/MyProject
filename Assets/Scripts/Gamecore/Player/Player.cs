@@ -20,7 +20,7 @@ public class Player
     // face
     public MonsterBase face;
     // in-game monsters
-    public List<MonsterBase> monsterList;
+    public List< MonsterBase> monsterList;
     // each round draw card number
     public int eachRoundDrawCardNum;
 
@@ -44,7 +44,7 @@ public class Player
             isActionFirst = false;
         }
         face = new MonsterBase();
-        monsterList = new List<MonsterBase>(maxMonsterNum);
+        monsterList = new List<MonsterBase>();
 
         InitCardBag();
     }
@@ -101,21 +101,35 @@ public class Player
         return null;
     }
 
+    // 获取所有在场怪物下标
+    public List<int> GetAllMonsterIndex()
+    {
+        List<int> result = new List<int>();
+        for (int i = 0; i < monsterList.Count; i++)
+        {
+            result.Add(i);
+        }
+        return result;
+    }
+
     // 计算怪物状态
     public void CalcStatus()
     {
-        List<MonsterBase> removeList = new List<MonsterBase>();
+        List<MonsterBase> removeMonster = new List<MonsterBase>();
         foreach (var monster in monsterList)
         {
             if (monster.IsDead())
             {
-                removeList.Add(monster);
+                removeMonster.Add(monster);
             }
         }
-        foreach (var monster in removeList)
+        foreach (var monster in removeMonster)
         {
             monsterList.Remove(monster);
         }
+
+        // 通知ui刷新
+        EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
     // 初始化游戏启动时怪物
@@ -134,42 +148,31 @@ public class Player
     // 使用怪物卡
     public void UseMonsterCard(MonsterCard monsterCard)
     {
-        if (monsterList.Count == maxMonsterNum)
+        if (monsterList.Count >= maxMonsterNum)
         {
-            Debug.LogError("monsterList.Count == maxMonsterNum");
+            Debug.LogError("index too large");
             return;
         }
-        MonsterBase monster = new MonsterBase(monsterCard, campId);
-        monsterList.Add(monster);
+        MonsterBase newMonster = new MonsterBase(monsterCard, campId);
+        monsterList.Add(newMonster);
+
+        // 通知ui刷新
+        EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
     // 使用属性卡        
     public void UseAttributeCard(AttributeCard attributeCard, List<int> indexs)
     {
-        attributeCard.Init();
-        if (attributeCard.attributeCardUseTargetType != AttributeCardUseTargetType.All)
+        foreach (int index in indexs)
         {
-            foreach (int index in indexs)
-            {
-                if (index > maxMonsterNum)
-                {
-                    Debug.LogError("index > maxMonsterNum:" + index + " " + maxMonsterNum);
-                    return;
-                }
-                MonsterBase monster = monsterList[index];
-                monster.AddAttribute(attributeCard);
-            }
+            GetMonster(index).AddAttribute(attributeCard);
         }
-        else
-        {
-            foreach (var monster in monsterList)
-            {
-                monster.AddAttribute(attributeCard);
-            }
-        }
+
+        // 通知ui刷新
+        EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
-    public void AfterUseCard(int cardId)
+    public void RemoveCard(int cardId)
     {
         CardBase card = GetCard(cardId);
         if (card == null)
@@ -195,6 +198,9 @@ public class Player
             handCardList.Add(canDrawCard[i]);
             Debug.Log("player: " + this.campId + " each round draw card:" + canDrawCard[i].cardName);
         }
+
+        // 通知ui刷新
+        EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
     // 计算可以抽卡的集合
@@ -261,28 +267,35 @@ public class Player
         return original;
     }
 
-    public override string ToString()
+    private string CardBagToString()
     {
         string str = "";
-        str += "camp: " + this.campId + "\n";
-        str += "cardBag: " + this.cardBag.Count + "\n";
-        str += "cardBag:";
+        str += "阵营" + this.campId + "卡包" + "\n";
         foreach (CardBase card in this.cardBag)
         {
             str += card.ToString();
         }
-        str += "\n";
-        str += "handCardList:";
+        str += '\n';
+        return str;
+    }
+
+    public override string ToString()
+    {
+        string str = "";
+        str += "脸:" + "\n";
+        str += face.ToString() + "\n";
+        str += "阵营：" + this.campId + "\n";
+        str += "手牌区:\n";
         foreach (CardBase card in this.handCardList)
         {
-            str += card.ToString();
+            str += card.ToString() + "\n";
+        }
+        str += "上场怪物区:\n";
+        foreach (var monster in this.monsterList)
+        {
+            str += monster.ToString() + "\n";
         }
         str += "\n";
-        str += "monsterList:";
-        foreach (MonsterBase monster in this.monsterList)
-        {
-            str += monster.ToString();
-        }
         return str;
     }
 }

@@ -12,7 +12,7 @@ public class AllocGid : Singleton<AllocGid>
         base.Init();
         gid = 0;
     }
-
+ 
     public int Alloc()
     {
         gid += 1;
