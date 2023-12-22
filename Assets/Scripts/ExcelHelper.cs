@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 //单元格信息
 public struct CellInfo
@@ -22,6 +22,9 @@ public static class ExcelExporterEditor
     // 导出的Json文件 存在Unity中的路径
     private const string clientPath = "./Assets/StreamingAssets/Config/";
 
+    // 导出文件后缀
+    private const string suffix = "Database";
+
     private const int CommentsLine = 0;//注释行
     private const int VariableNameLine = 1;//变量名行
     private const int VariableTypeLine = 2;//变量类型行
@@ -35,9 +38,9 @@ public static class ExcelExporterEditor
             //导出excel表
             ExportConfigs(clientPath);
             //导出对应的实体结构类
-            ExportAllCalss(@"./Assets/Scripts/Config/", "");
+            ExportAllClass(@"./Assets/Scripts/Config/", "");
 
-            AssetDatabase.Refresh();
+            //AssetDatabase.Refresh();
         }
         catch (Exception e)
         {
@@ -63,7 +66,7 @@ public static class ExcelExporterEditor
     }
 
     // 导出所有配置表为cs文件
-    private static void ExportAllCalss(string exportDir, string csHead)
+    private static void ExportAllClass(string exportDir, string csHead)
     {
         foreach (var filePath in Directory.GetFiles(ExcelPath))
         {
@@ -88,7 +91,7 @@ public static class ExcelExporterEditor
         // 文件名 不带后缀
         string protoName = Path.GetFileNameWithoutExtension(fileName);
         // 生产文件路径
-        string exportPath = Path.Combine(exportDir, $"{protoName}.cs");
+        string exportPath = Path.Combine(exportDir, $"{protoName}{suffix}.cs");
         using (FileStream txt = new FileStream(exportPath, FileMode.Create))
         using (StreamWriter sw = new StreamWriter(txt))
         {
@@ -97,16 +100,15 @@ public static class ExcelExporterEditor
             ISheet sheet = xssfWorkbook.GetSheetAt(0);
             // 以下是要生产的格式
             sb.Append("using System.Collections.Generic;\t\n");
-            sb.Append($"public class {protoName}s\n");//类名
+            sb.Append($"public class {protoName}{suffix}\n");//类名
             sb.Append("{\n");
             sb.Append($"\tpublic List<{protoName}> info;\n");
             sb.Append("}\n\n");
 
 
             sb.Append($"[System.Serializable]\n");
-            sb.Append($"public class {protoName}\n");//类名
+            sb.Append($"public class {protoName} : Config\n");//类名
             sb.Append("{\n");
-            sb.Append("\tpublic long Id;\n");
 
             int cellCount = sheet.GetRow(VariableNameLine).LastCellNum;
 
@@ -125,9 +127,36 @@ public static class ExcelExporterEditor
 
                 if (fieldType == "" || fieldName == "") continue;
 
-                sb.Append($"\t///{fieldDes} \n");
+                sb.Append($"\t/// {fieldDes} \n");
                 sb.Append($"\tpublic {fieldType} {fieldName};\n");
+
             }
+
+            sb.Append($"\n\t/// 打印函数 \n");
+            sb.Append($"\tpublic override string ToString()\n");
+            sb.Append("\t{\n");
+
+            // 拼接字符串
+            sb.Append($"\t\tstring str = \"\";\n");
+            for (int i = 1; i < cellCount; i++)
+            {
+                string fieldDesc = GetCellString(sheet, CommentsLine, i);
+                if (fieldDesc.StartsWith("#")) continue;
+                fieldDesc = fieldDesc.ToLower();
+
+                //ID
+                string fieldDes = GetCellString(sheet, CommentsLine, i);
+
+                string fieldName = GetCellString(sheet, VariableNameLine, i);
+
+                string fieldType = GetCellString(sheet, VariableTypeLine, i);
+
+                if (fieldType == "" || fieldName == "") continue;
+
+                sb.Append($"\t\tstr += {fieldName}.ToString();\n");
+            }
+            sb.Append("\t\treturn str;\n");
+            sb.Append("\t}\n");
 
             sb.Append("}\n");
 
@@ -145,7 +174,7 @@ public static class ExcelExporterEditor
 
         string protoName = Path.GetFileNameWithoutExtension(filePath);
 
-        string exportPath = Path.Combine(exportDir, $"{protoName}.json");
+        string exportPath = Path.Combine(exportDir, $"{protoName}{suffix}.json");
 
         using (FileStream txt = new FileStream(exportPath, FileMode.Create))
 

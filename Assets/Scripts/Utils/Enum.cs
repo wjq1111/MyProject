@@ -14,21 +14,13 @@ public enum CampId
     AI
 }
 
-// 属性卡使用目标类型
-public enum AttributeCardUseTargetType
-{
-    MySelf,
-    Other,
-    // all = myself + other
-    All,
-}
 
 // 卡片能力
 public enum Ability
 {
     Invalid,
     SummonMonster,
-    HurtMonster
+    ModifyMonsterAttribute
 }
 
 // 图层层级
