@@ -24,9 +24,6 @@ public class Player
     // each round draw card number
     public int eachRoundDrawCardNum;
 
-    // is action first
-    public bool isActionFirst;
-
     public void Init()
     {
         handCardList = new List<CardBase>();
@@ -35,14 +32,6 @@ public class Player
         eachRoundDrawCardNum = 2;
         maxCardNum = 10;
 
-        if (campId == CampId.Myself)
-        {
-            isActionFirst = true;
-        }
-        if (campId == CampId.AI)
-        {
-            isActionFirst = false;
-        }
         face = new MonsterBase();
         monsterList = new List<MonsterBase>();
 
@@ -52,23 +41,11 @@ public class Player
     // 初始化卡片背包
     private void InitCardBag()
     {
-        cardBag = new List<CardBase>(maxCardNum);
-        for (int i = 0; i < maxCardNum; i++)
+        cardBag = new List<CardBase>();
+        foreach (var playerCard in ConfigManager.Instance.playerCardBagMap)
         {
             CardBase card = new CardBase();
-            if (i % 2 == 0)
-            {
-                card.useCardType = UseCardType.MonsterCard;
-                card.cardName = "monster lg";
-                card.outlookCardName = "怪物lg";
-            }
-            else
-            {
-                card.useCardType = UseCardType.MonsterCard;
-                card.cardName = "monster gwc";
-                card.outlookCardName = "怪物gwc";
-            }
-
+            card.Init(playerCard.Value.Id);
             cardBag.Add(card);
         }
     }
@@ -160,6 +137,12 @@ public class Player
         EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
+    public AttributeCard AddAttributeCardBuff(AttributeCard card)
+    {
+        // TODO 修正属性
+        return card;
+    }
+
     // 使用属性卡        
     public void UseAttributeCard(AttributeCard attributeCard, List<int> indexs)
     {
@@ -187,13 +170,16 @@ public class Player
     {
         List<CardBase> canDrawCard = CalcCanDrawCard();
 
-        if (canDrawCard.Count < eachRoundDrawCardNum)
+        if (canDrawCard == null)
         {
-            Debug.LogError("init game start card fail" + canDrawCard.Count);
             return;
         }
+        if (canDrawCard.Count < eachRoundDrawCardNum)
+        {
+            Debug.Log("can draw less than each round draw" + canDrawCard.Count + " " + eachRoundDrawCardNum);
+        }
 
-        for (int i = 0; i < eachRoundDrawCardNum; i++)
+        for (int i = 0; i < Mathf.Min(eachRoundDrawCardNum, canDrawCard.Count); i++)
         {
             handCardList.Add(canDrawCard[i]);
             Debug.Log("player: " + this.campId + " each round draw card:" + canDrawCard[i].cardName);

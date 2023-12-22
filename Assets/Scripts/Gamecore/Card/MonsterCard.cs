@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class MonsterCard : CardBase
 {
     // 怪物卡攻击
@@ -24,11 +26,16 @@ public class MonsterCard : CardBase
     // 初始化怪物
     public void Init()
     {
-        // config, id -> cfg
-        this.attack = 100;
-        this.defense = 100;
-        this.hp = 100;
-        this.actionNum = 1;
+        if (!ConfigManager.Instance.monsterCardManualMap.ContainsKey(this.id))
+        {
+            Debug.LogError("card id not in monster card manual map");
+            return;
+        }
+        var cfgCard = ConfigManager.Instance.monsterCardManualMap[this.id];
+        this.attack = cfgCard.Attack;
+        this.defense = cfgCard.Defense;
+        this.hp = cfgCard.Hp;
+        this.actionNum = cfgCard.ActionNum;
         this.minDamage = 1;
     }
 }

@@ -1,5 +1,7 @@
 // 属性卡逻辑
 
+using UnityEngine;
+
 public class AttributeCard : CardBase
 {
     // 增幅攻击力
@@ -10,8 +12,6 @@ public class AttributeCard : CardBase
     public int addHp;
     // 增幅行动次数
     public int addActionNum;
-    // 属性卡使用目标
-    public AttributeCardUseTargetType attributeCardUseTargetType;
     // 属性卡作用单位数量，如果是全体作用，useNum为0
     public int useNum;
 
@@ -27,12 +27,16 @@ public class AttributeCard : CardBase
 
     public void Init()
     {
-        // config, id -> cfg
-        this.addAttack = 1;
-        this.addDefense = 1;
-        this.addHp = 1;
-        this.addActionNum = 1;
-        this.attributeCardUseTargetType = AttributeCardUseTargetType.MySelf;
+        if (!ConfigManager.Instance.attributeCardManualMap.ContainsKey(this.id))
+        {
+            Debug.LogError("card id not in attributeCardManualMap" + this.id);
+            return;
+        }
+        var cfgCard = ConfigManager.Instance.attributeCardManualMap[this.id];
+        this.addAttack = cfgCard.Attack;
+        this.addDefense = cfgCard.Defense;
+        this.addHp = cfgCard.Hp;
+        this.addActionNum = cfgCard.ActionNum;
         this.useNum = 1;
     }
 }

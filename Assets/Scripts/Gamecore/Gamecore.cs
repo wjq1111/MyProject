@@ -209,29 +209,10 @@ public class Gamecore : Singleton<Gamecore>
             return;
         }
 
-        if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.MySelf)
-        {
-            // 用一个对自己生效的卡片
-            sourcePlayer.UseAttributeCard(attributeCard, targetMonsterIndex);
-        }
-        else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.Other)
-        {
-            // 用一个对对方生效的卡片
-            targetPlayer.UseAttributeCard(attributeCard, targetMonsterIndex);
-        }
-        else if (attributeCard.attributeCardUseTargetType == AttributeCardUseTargetType.All)
-        {
-            // 对全体使用属性卡片
-            if (attributeCard.useNum != 0)
-            {
-                Debug.LogError("not same use num, can not use card");
-                return;
-            }
-            foreach (var player in playerDict)
-            {
-                player.Value.UseAttributeCard(attributeCard, GetAllMonsterIndex(player.Value.campId));
-            }
-        }
+        // 根据sourcePlayer的修正属性
+        attributeCard = sourcePlayer.AddAttributeCardBuff(attributeCard);
+        // targetPlayer使用属性卡
+        targetPlayer.UseAttributeCard(attributeCard, targetMonsterIndex);
     }
 
     // 使用卡片，source是发起方，target是目标方，targetMonsterIndex是目标怪物id
@@ -270,9 +251,9 @@ public class Gamecore : Singleton<Gamecore>
                 // 召唤出来的怪物应该在这个索引的后面
                 UseMonsterCard(source, cardAbilitySummonMonster.monsterCard);
             }
-            else if (cardAbility.ability == Ability.HurtMonster)
+            else if (cardAbility.ability == Ability.ModifyMonsterAttribute)
             {
-                CardAbilityHurtMonster cardAbilityHurtMonster = new CardAbilityHurtMonster(cardAbility);
+                CardAbilityModifyMonsterAttribute cardAbilityHurtMonster = new CardAbilityModifyMonsterAttribute(cardAbility);
                 UseAttributeCard(source, target, cardAbilityHurtMonster.attributeCard, targetMonsterIndex);
             }
         }

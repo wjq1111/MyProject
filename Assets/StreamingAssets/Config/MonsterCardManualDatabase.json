@@ -1,0 +1,25 @@
+{
+"info":[
+{
+"Id":10001,"Attack":1,"Defense":11,"Hp":111,"ActionNum":1,"Description":"淡水鳄"
+},
+{
+"Id":10002,"Attack":2,"Defense":22,"Hp":222,"ActionNum":1,"Description":"血沼迅猛龙"
+},
+{
+"Id":10003,"Attack":3,"Defense":33,"Hp":333,"ActionNum":1,"Description":"狼骑兵"
+},
+{
+"Id":10004,"Attack":4,"Defense":44,"Hp":444,"ActionNum":1,"Description":"神射手"
+},
+{
+"Id":10005,"Attack":5,"Defense":55,"Hp":555,"ActionNum":1,"Description":"脚男"
+},
+{
+"Id":10006,"Attack":6,"Defense":66,"Hp":666,"ActionNum":1,"Description":"巨人"
+},
+{
+"Id":10007,"Attack":7,"Defense":77,"Hp":777,"ActionNum":1,"Description":"精灵弓箭手"
+}
+	]
+}
