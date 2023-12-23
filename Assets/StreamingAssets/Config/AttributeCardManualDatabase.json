@@ -1,13 +1,13 @@
 {
 "info":[
 {
-"Id":20001,"Attack":0,"Defense":0,"Hp":0,"ActionNum":1,"Description":"使一个目标获得1点行动力"
+"Id":20001,"Attack":0,"Defense":0,"Hp":0,"ActionNum":1,"TargetCount":1,"Description":"使一个目标获得1点行动力"
 },
 {
-"Id":20002,"Attack":0,"Defense":0,"Hp":1,"ActionNum":0,"Description":"使一个目标回1滴血"
+"Id":20002,"Attack":0,"Defense":0,"Hp":1,"ActionNum":0,"TargetCount":1,"Description":"使一个目标回1滴血"
 },
 {
-"Id":1000001,"Attack":0,"Defense":0,"Hp":-1,"ActionNum":0,"Description":"使一个目标扣1滴血"
+"Id":1000001,"Attack":0,"Defense":0,"Hp":-1,"ActionNum":0,"TargetCount":1,"Description":"使一个目标扣1滴血"
 }
 	]
 }

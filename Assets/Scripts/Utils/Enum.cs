@@ -19,8 +19,19 @@ public enum CampId
 public enum Ability
 {
     Invalid,
+    // 召唤怪物
     SummonMonster,
+    // 修改怪物属性
     ModifyMonsterAttribute
+}
+
+public enum ResourceType
+{
+    Invalid,
+    // 手牌区的按钮
+    PlayerCardButton,
+    // 场上怪物区的按钮
+    MonsterButton,
 }
 
 // 图层层级
@@ -42,6 +53,9 @@ public enum EventId
     OnClickStartGameButton,
     OnClickEndRoundButton,
     OnClickExitGameButton,
+    OnClickPlayerCardButton,
+    OnEnterPlayerCardButton,
+    OnClickMonsterButton,
 
     // For test
     OnClickPrintPlayerButton,

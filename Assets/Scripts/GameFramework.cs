@@ -10,14 +10,23 @@ public class GameFramework : MonoSingleton<GameFramework>
         get { return gameCamera; }
     }
 
+    private GameConf gameConf;
+
+    public GameConf GameConf
+    {
+        get { return gameConf; }
+    }
+
     protected override void Awake()
     {
         base.Awake();
+        gameConf = Resources.Load<GameConf>("GameConf");
 
         AllocGid.CreateInstance();
         GameFsm.CreateInstance();
         ConfigManager.CreateInstance();
         EventManager.CreateInstance();
+        PoolManager.GetInstance();
         FormManager.GetInstance();
         Gamecore.CreateInstance();
 
@@ -35,6 +44,7 @@ public class GameFramework : MonoSingleton<GameFramework>
         base.OnDestroy();
         Gamecore.DestroyInstance();
         FormManager.DestroyInstance();
+        PoolManager.DestroyInstance();
         EventManager.DestroyInstance();
         ConfigManager.DestroyInstance();
         GameFsm.DestroyInstance();

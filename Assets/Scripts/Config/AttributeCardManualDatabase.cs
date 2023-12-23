@@ -15,6 +15,8 @@ public class AttributeCardManual : Config
 	public int Hp;
 	/// 行动次数 
 	public int ActionNum;
+	/// 目标数量 
+	public int TargetCount;
 	/// 描述 
 	public string Description;
 
@@ -26,6 +28,7 @@ public class AttributeCardManual : Config
 		str += Defense.ToString();
 		str += Hp.ToString();
 		str += ActionNum.ToString();
+		str += TargetCount.ToString();
 		str += Description.ToString();
 		return str;
 	}
