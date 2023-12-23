@@ -30,7 +30,7 @@ public class MonsterBase
         monsterCampId = CampId.Invalid;
         attack = 0;
         defense = 0;
-        hp = 1;
+        hp = 0;
         actionNum = 0;
         minDamage = 0;
     }
@@ -45,7 +45,7 @@ public class MonsterBase
         InitMonsterBase();
         this.id = card.gid;
         this.monsterCampId = campId;
-        this.monsterName = card.outlookCardName;
+        this.monsterName = card.cardName;
         this.attack = card.attack;
         this.defense = card.defense;
         this.hp = card.hp;

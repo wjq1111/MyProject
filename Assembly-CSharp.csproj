@@ -60,6 +60,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.14f1c1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GameConf.cs" />
     <Compile Include="Assets\Scripts\Manager\FormManager.cs" />
     <Compile Include="Assets\Scripts\ExcelHelper.cs" />
     <Compile Include="Assets\Scripts\UI\UIScript.cs" />
@@ -68,10 +69,12 @@
     <Compile Include="Assets\Scripts\Manager\EventManager.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Gamecore.cs" />
     <Compile Include="Assets\Scripts\GameFsm.cs" />
+    <Compile Include="Assets\Scripts\Manager\PoolManager.cs" />
     <Compile Include="Assets\Scripts\Utils\Enum.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Card\CardBase.cs" />
     <Compile Include="Assets\Scripts\Gamecore\Card\MonsterCard.cs" />
     <Compile Include="Assets\Scripts\Manager\AllocGid.cs" />
+    <Compile Include="Assets\Scripts\UI\UIEventParam.cs" />
     <Compile Include="Assets\Scripts\Config\CardManualDatabase.cs" />
     <Compile Include="Assets\Scripts\Config\AttributeCardManualDatabase.cs" />
     <Compile Include="Assets\Scripts\GameFramework.cs" />

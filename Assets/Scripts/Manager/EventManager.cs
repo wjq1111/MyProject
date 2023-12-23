@@ -7,10 +7,11 @@ using UnityEngine;
 public class EventManager : Singleton<EventManager>
 {
     public delegate void OnEventHandler();
-    public Dictionary<EventId, List<OnEventHandler>> eventHandlerDict;
+    public delegate void OnUIEventHandler(UIEventParams eventParams = new UIEventParams());
+    public Dictionary<EventId, List<OnUIEventHandler>> eventHandlerDict;
     public override void Init()
     {
-        eventHandlerDict = new Dictionary<EventId, List<OnEventHandler>>();
+        eventHandlerDict = new Dictionary<EventId, List<OnUIEventHandler>>();
     }
 
     public void UnInit()
@@ -19,7 +20,7 @@ public class EventManager : Singleton<EventManager>
         eventHandlerDict = null;
     }
 
-    public void AddEventListener(EventId eventID, OnEventHandler onEventHandler)
+    public void AddEventListener(EventId eventID, OnUIEventHandler onEventHandler)
     {
         if (eventID == EventId.Invalid || onEventHandler == null)
         {
@@ -28,20 +29,30 @@ public class EventManager : Singleton<EventManager>
 
         if (eventHandlerDict.ContainsKey(eventID))
         {
-            List<OnEventHandler> list = eventHandlerDict[eventID];
+            List<OnUIEventHandler> list = eventHandlerDict[eventID];
             list.Remove(onEventHandler);
             list.Add(onEventHandler);
         }
         else
         {
-            List<OnEventHandler> list = new List<OnEventHandler>();
+            List<OnUIEventHandler> list = new List<OnUIEventHandler>();
             list.Add(onEventHandler);
             eventHandlerDict[eventID] = list;
         }
         //Debug.Log("Add event listener:" + eventID.ToString());
     }
 
-    public void RemoveEventListener(EventId eventID, OnEventHandler onEventHandler)
+    public void AddEventListener(EventId eventID, OnEventHandler noParams)
+    {
+        OnUIEventHandler onUIEventHandler = (eventParams) =>
+        {
+            noParams();
+        };
+
+        AddEventListener(eventID, onUIEventHandler);
+    }
+
+    public void RemoveEventListener(EventId eventID, OnUIEventHandler onEventHandler)
     {
         if (eventID == EventId.Invalid || onEventHandler == null)
         {
@@ -50,13 +61,23 @@ public class EventManager : Singleton<EventManager>
 
         if (eventHandlerDict.ContainsKey(eventID) && eventHandlerDict[eventID] != null)
         {
-            List<OnEventHandler> list = eventHandlerDict[eventID];
+            List<OnUIEventHandler> list = eventHandlerDict[eventID];
             list.Remove(onEventHandler);
         }
         //Debug.Log("Remove event listener:" + eventID.ToString());
     }
 
-    public void DispatchEvent(EventId eventID)
+    public void RemoveEventListener(EventId eventID, OnEventHandler noParams)
+    {
+        OnUIEventHandler onUIEventHandler = (eventParams) =>
+        {
+            noParams();
+        };
+
+        RemoveEventListener(eventID, onUIEventHandler);
+    }
+
+    public void DispatchEvent(EventId eventID, UIEventParams eventParams = new UIEventParams())
     {
         if (eventID == EventId.Invalid)
         {
@@ -70,7 +91,7 @@ public class EventManager : Singleton<EventManager>
         {
             foreach (var handler in eventHandlerDict[eventID])
             {
-                handler();
+                handler(eventParams);
             }
         }
     }

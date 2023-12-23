@@ -17,6 +17,7 @@ public class MonsterCard : CardBase
 
     public MonsterCard(CardBase card)
     {
+        this.id = card.id;
         this.gid = card.gid;
         this.useCardType = card.useCardType;
         this.cardName = card.cardName;

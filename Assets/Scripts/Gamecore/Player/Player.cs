@@ -163,6 +163,9 @@ public class Player
             return;
         }
         handCardList.Remove(card);
+
+        // 通知ui刷新
+        EventManager.Instance.DispatchEvent(EventId.FlushDebugStatus);
     }
 
     // 每回合抽卡

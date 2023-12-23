@@ -74,10 +74,14 @@ public class CardBase
     // 卡片能力
     public List<CardAbility> cardAbility;
 
+    // 卡片选择目标顺序表，第x步，要选几个目标
+    public Dictionary<int, int> targetCountDict;
+
     public CardBase()
     {
         this.gid = AllocGid.Instance.Alloc();
         cardAbility = new List<CardAbility>();
+        targetCountDict = new Dictionary<int, int>();
     }
 
     public void Init(int cardId)
@@ -91,6 +95,14 @@ public class CardBase
         var cfgCard = ConfigManager.Instance.cardManualMap[cardId];
         this.cardName = cfgCard.CardName;
         this.useCardType = (UseCardType)cfgCard.UseCardType;
+
+        int step = 1;
+        if (useCardType == UseCardType.MonsterCard)
+        {
+            // 怪物卡第一步一定是一个目标
+            targetCountDict.Add(step, 1);
+            step += 1;
+        }
 
         // 初始化卡的能力
         string abilityStr = cfgCard.Ability;
@@ -110,6 +122,13 @@ public class CardBase
                 CardAbility newCardAbility = new CardAbility();
                 newCardAbility.ability = abilityType;
                 newCardAbility.abilityCardId = abilityCardId;
+
+                if (ConfigManager.Instance.attributeCardManualMap.ContainsKey(abilityCardId))
+                {
+                    var attributeCard = ConfigManager.Instance.attributeCardManualMap[abilityCardId];
+                    targetCountDict.Add(step, attributeCard.TargetCount);
+                    step += 1;
+                }
             }
         }
     }

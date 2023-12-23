@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be7b7ecbb6cf9b4eb5e7a7d67e085d6, type: 3}
+  m_Name: GameConf
+  m_EditorClassIdentifier: 
+  PlayerCardButton: {fileID: 6452361381703774449, guid: 9ce978ca56d7788449224240f49ca926, type: 3}
+  MonsterButton: {fileID: 4575889670546965003, guid: 5f771191964b0314686132e1e7d9c3d3, type: 3}
